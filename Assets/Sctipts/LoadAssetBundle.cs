@@ -43,11 +43,13 @@ public class LoadAssetBundle : MonoBehaviour
                     Instantiate(prefab);
                     prefab = bundle.LoadAsset<GameObject>("rodion2_target");
                     Instantiate(prefab);
+                    Debug.Log("rodion распакована");
                 }
                 else if (AssetName == "marmeladov")
                 {
                     var prefab = bundle.LoadAsset<GameObject>("marmeladov_target");
                     Instantiate(prefab);
+                    Debug.Log("marmeladov распакована");
                 }
                 else    throw new Exception("ошмбка в имени asset bundle или все asset bundle загружены:" + www.error);
                 
