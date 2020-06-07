@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="marmeladov1_2" size="1.000000 0.750108" />
+    <ImageTarget name="rodion2_2" size="1.000000 0.750000" />
+    <ImageTarget name="rodion1_5" size="1.000000 0.750108" />
+    <ImageTarget name="pawnbroker2_1" size="1.000000 1.225144" />
+    <ImageTarget name="pawnbroker1_1" size="1.000000 0.689948" />
+  </Tracking>
+</QCARConfig>
