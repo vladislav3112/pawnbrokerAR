@@ -10,6 +10,7 @@ using UnityEngine;
 using Vuforia;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 /// <summary>
 /// A custom handler that implements the ITrackableEventHandler interface.
 ///
@@ -66,6 +67,12 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
             OnTrackingFound();
             if (music!=null) music.Play();
+            if(mTrackableBehaviour.TrackableName == "pawnbroker1_1" || mTrackableBehaviour.TrackableName == "pawnbroker2_1")
+                GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Дом Алёны Ивановны, старухи-процентщицы";
+            else if (mTrackableBehaviour.TrackableName == "rodion2_2" || mTrackableBehaviour.TrackableName == "rodion1_5")
+                GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Дом раскольникова, Родиона Романовича";
+            else if (mTrackableBehaviour.TrackableName == "marmeladov1_2")
+                GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Marmeladov_destiny";
         }
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
                  newStatus == TrackableBehaviour.Status.NO_POSE)
