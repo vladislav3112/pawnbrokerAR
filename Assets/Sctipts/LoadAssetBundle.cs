@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-
+using Vuforia;
 public class LoadAssetBundle : MonoBehaviour
 {
     private string BundleURL;
@@ -49,7 +49,10 @@ public class LoadAssetBundle : MonoBehaviour
                 {
                     var prefab = bundle.LoadAsset<GameObject>("marmeladov_target");
                     Instantiate(prefab);
-                    Debug.Log("marmeladov распакована");
+                    Debug.Log("marmeladov распакована");         
+                
+                    version++;
+                    //foreach (obj2.GetComponent)
                 }
                 else    throw new Exception("ошмбка в имени asset bundle или все asset bundle загружены:" + www.error);
                 

@@ -33,12 +33,10 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
     
     protected virtual void Start()
     {
-        
         mTrackableBehaviour = GetComponent<TrackableBehaviour>();
         if (mTrackableBehaviour)
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
     }
-
     protected virtual void OnDestroy()
     {
         if (mTrackableBehaviour)
