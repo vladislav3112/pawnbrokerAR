@@ -9,6 +9,7 @@ Confidential and Proprietary - Protected under copyright and other laws.
 using UnityEngine;
 using Vuforia;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 /// <summary>
@@ -19,17 +20,19 @@ using UnityEngine.UI;
 /// </summary>
 public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
 {
+    public UnityEngine.Video.VideoPlayer videoPlayer;
     #region PROTECTED_MEMBER_VARIABLES
 
     protected TrackableBehaviour mTrackableBehaviour;
     protected TrackableBehaviour.Status m_PreviousStatus;
     protected TrackableBehaviour.Status m_NewStatus;
-
+    
     #endregion // PROTECTED_MEMBER_VARIABLES
 
     #region UNITY_MONOBEHAVIOUR_METHODS
     public AudioSource music;
-
+    int i = 0;
+    private bool[] isBundleHandled = { false, false, false };
     
     protected virtual void Start()
     {
@@ -62,21 +65,41 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             newStatus == TrackableBehaviour.Status.TRACKED ||
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
         {
-            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
+            string targetName = mTrackableBehaviour.TrackableName;
+            Debug.Log("Trackable " + targetName + " found");
+            //attach all from asset bundle:
             OnTrackingFound();
-            if (music!=null) music.Play();
-            if(mTrackableBehaviour.TrackableName == "pawnbroker1_1" || mTrackableBehaviour.TrackableName == "pawnbroker2_1")
-                GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Дом Алёны Ивановны, старухи-процентщицы";
-            else if (mTrackableBehaviour.TrackableName == "rodion2_2" || mTrackableBehaviour.TrackableName == "rodion1_5")
-                GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Дом раскольникова, Родиона Романовича";
-            else if (mTrackableBehaviour.TrackableName == "marmeladov1_2")
-                GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Marmeladov_destiny";
+            i = 0;
+            if (!isBundleHandled[0] && GameObject.Find("pawnbroker1_target(Clone)") != null && targetName == "pawnbroker1_1")
+            {
+                isBundleHandled[0] = true;
+                var assetObj = GameObject.Find("pawnbroker1_target(Clone)");
+                foreach (GameObject currObj in assetObj.gameObject.GetComponentsInChildren<GameObject>())
+                {
+                    currObj.transform.parent = this.gameObject.transform;
+                    currObj.SetActive(true);
+                }      
+            }
+            if (!isBundleHandled[1] && GameObject.Find("rodion1_target(Clone)") != null && targetName == "rodion1_5")
+            {
+                isBundleHandled[1] = true;
+                var assetObj = GameObject.Find("rodion1_target(Clone)");
+                while (assetObj.gameObject.transform.GetChild(i) != null)
+                {
+                    Transform currObj = assetObj.gameObject.transform.GetChild(i);
+                    currObj.parent = this.gameObject.transform;
+                    currObj.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+                    currObj.localPosition = new Vector3(-0.048f, 0.006f, -0.058f);
+                    currObj.localRotation =Quaternion.Euler(new Vector3(90, 0, 90));
+                }    
+            }
         }
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
                  newStatus == TrackableBehaviour.Status.NO_POSE)
         {
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
             OnTrackingLost();
+            if (videoPlayer != null) videoPlayer.Stop();
             if (music != null)  music.Stop();
         }
         else
@@ -94,6 +117,16 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
 
     protected virtual void OnTrackingFound()
     {
+        //custom
+        if (videoPlayer != null) videoPlayer.Play();
+        if (music != null) music.Play();
+        if (mTrackableBehaviour.TrackableName == "pawnbroker1_1" || mTrackableBehaviour.TrackableName == "pawnbroker2_1")
+            GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Дом Алёны Ивановны, старухи-процентщицы";
+        else if (mTrackableBehaviour.TrackableName == "rodion2_2" || mTrackableBehaviour.TrackableName == "rodion1_5")
+            GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Дом Раскольникова, Родиона Романовича";
+        else if (mTrackableBehaviour.TrackableName == "marmeladov1_2")
+            GameObject.Find("ButtonDescription").GetComponentInChildren<Text>().text = "Marmeladov_destiny";
+
         var rendererComponents = GetComponentsInChildren<Renderer>(true);
         var colliderComponents = GetComponentsInChildren<Collider>(true);
         var canvasComponents = GetComponentsInChildren<Canvas>(true);
@@ -109,7 +142,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         // Enable canvas':
         foreach (var component in canvasComponents)
             component.enabled = true;
-    }
+        }
 
 
     protected virtual void OnTrackingLost()
