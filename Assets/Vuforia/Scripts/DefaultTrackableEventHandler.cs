@@ -68,31 +68,37 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             string targetName = mTrackableBehaviour.TrackableName;
             Debug.Log("Trackable " + targetName + " found");
             //attach all from asset bundle:
-            OnTrackingFound();
+            
             i = 0;
-            if (!isBundleHandled[0] && GameObject.Find("pawnbroker1_target(Clone)") != null && targetName == "pawnbroker1_1")
+            if (!isBundleHandled[0] && GameObject.Find("pawnbroker2_target(Clone)") != null && targetName == "pawnbroker2_1")
             {
                 isBundleHandled[0] = true;
-                var assetObj = GameObject.Find("pawnbroker1_target(Clone)");
-                foreach (GameObject currObj in assetObj.gameObject.GetComponentsInChildren<GameObject>())
+                var assetObj = GameObject.Find("pawnbroker2_target(Clone)");
                 {
-                    currObj.transform.parent = this.gameObject.transform;
-                    currObj.SetActive(true);
-                }      
+                    Transform currObj = assetObj.gameObject.transform.GetChild(0);
+                    currObj.parent = this.gameObject.transform;
+                    currObj.localScale = new Vector3(0.4f, 0.3f, 1);
+                    currObj.localPosition = new Vector3(-0.036f, 0, -0.131f);
+                    currObj.localRotation = Quaternion.Euler(new Vector3(90, 0, 0));
+                    videoPlayer = currObj.gameObject.GetComponent<UnityEngine.Video.VideoPlayer>();
+                }
             }
             if (!isBundleHandled[1] && GameObject.Find("rodion1_target(Clone)") != null && targetName == "rodion1_5")
             {
                 isBundleHandled[1] = true;
                 var assetObj = GameObject.Find("rodion1_target(Clone)");
-                while (assetObj.gameObject.transform.GetChild(i) != null)
+                if (assetObj.gameObject.transform.GetChild(0) != null)
                 {
-                    Transform currObj = assetObj.gameObject.transform.GetChild(i);
+                    Transform currObj = assetObj.gameObject.transform.GetChild(0);
                     currObj.parent = this.gameObject.transform;
                     currObj.localScale = new Vector3(0.15f, 0.15f, 0.15f);
                     currObj.localPosition = new Vector3(-0.048f, 0.006f, -0.058f);
                     currObj.localRotation =Quaternion.Euler(new Vector3(90, 0, 90));
                 }    
             }
+
+            OnTrackingFound();
+
         }
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
                  newStatus == TrackableBehaviour.Status.NO_POSE)
