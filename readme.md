@@ -4,7 +4,7 @@
 There is three buttons, only first two work. ("Раскольников", "Мармеладов")   
  
 Press the button, make sure that you have internet connection and you can point the camera at the building  
-and you can enjoy AR for all scenes from this pack!  
+and enjoy AR for all scenes from this pack!  
   
 
 ### Notes:
