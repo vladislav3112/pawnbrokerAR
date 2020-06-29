@@ -32,7 +32,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
     #region UNITY_MONOBEHAVIOUR_METHODS
     public AudioSource music;
     int i = 0;
-    private bool[] isBundleHandled = { false, false, false };
+    private bool[] isSceneHandled = { false, false, false, false, false };
     
     protected virtual void Start()
     {
@@ -70,30 +70,48 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             //attach all from asset bundle:
             
             i = 0;
-            if (!isBundleHandled[0] && GameObject.Find("pawnbroker2_target(Clone)") != null && targetName == "pawnbroker2_1")
+            if (!isSceneHandled[0] && GameObject.Find("pawnbroker2_target(Clone)") != null && targetName == "pawnbroker2_1")
             {
-                isBundleHandled[0] = true;
+                isSceneHandled[0] = true;
                 var assetObj = GameObject.Find("pawnbroker2_target(Clone)");
+                Transform currObj = assetObj.gameObject.transform.GetChild(0);
+                if (currObj != null)
                 {
-                    Transform currObj = assetObj.gameObject.transform.GetChild(0);
+
                     currObj.parent = this.gameObject.transform;
                     currObj.localScale = new Vector3(0.4f, 0.3f, 1);
                     currObj.localPosition = new Vector3(-0.036f, 0, -0.131f);
                     currObj.localRotation = Quaternion.Euler(new Vector3(90, 0, 0));
                     videoPlayer = currObj.gameObject.GetComponent<UnityEngine.Video.VideoPlayer>();
+                    videoPlayer.playOnAwake = false;
                 }
             }
-            if (!isBundleHandled[1] && GameObject.Find("rodion1_target(Clone)") != null && targetName == "rodion1_5")
+            if (!isSceneHandled[1] && GameObject.Find("pawnbroker1_target(Clone)") != null && targetName == "pawnbroker1_1")
             {
-                isBundleHandled[1] = true;
-                var assetObj = GameObject.Find("rodion1_target(Clone)");
-                if (assetObj.gameObject.transform.GetChild(0) != null)
+                isSceneHandled[1] = true;
+                var assetObj = GameObject.Find("pawnbroker1_target(Clone)");
+                Transform currObj = assetObj.gameObject.transform.GetChild(0);
+                currObj = assetObj.gameObject.transform.GetChild(0);
+                if (currObj != null)
                 {
-                    Transform currObj = assetObj.gameObject.transform.GetChild(0);
+                    currObj.parent = this.gameObject.transform;
+                    currObj.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                    currObj.localPosition = new Vector3(-0.03f, 0.04f, 0.017f);
+                    currObj.localRotation = Quaternion.Euler(new Vector3(75, 20, -2));
+
+                }
+            }
+            if (!isSceneHandled[2] && GameObject.Find("rodion1_target(Clone)") != null && targetName == "rodion1_5")
+            {
+                isSceneHandled[2] = true;
+                var assetObj = GameObject.Find("rodion1_target(Clone)");
+                Transform currObj = assetObj.gameObject.transform.GetChild(0);
+                if (currObj != null)
+                {
                     currObj.parent = this.gameObject.transform;
                     currObj.localScale = new Vector3(0.15f, 0.15f, 0.15f);
                     currObj.localPosition = new Vector3(-0.048f, 0.006f, -0.058f);
-                    currObj.localRotation =Quaternion.Euler(new Vector3(90, 0, 90));
+                    currObj.localRotation = Quaternion.Euler(new Vector3(90, 0, 90));
                 }    
             }
 
@@ -104,9 +122,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
                  newStatus == TrackableBehaviour.Status.NO_POSE)
         {
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
-            OnTrackingLost();
-            if (videoPlayer != null) videoPlayer.Stop();
-            if (music != null)  music.Stop();
+            OnTrackingLost();            
         }
         else
         {
@@ -153,6 +169,10 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
 
     protected virtual void OnTrackingLost()
     {
+        //custom
+        if (videoPlayer != null) videoPlayer.Stop();
+        if (music != null) music.Stop();
+
         var rendererComponents = GetComponentsInChildren<Renderer>(true);
         var colliderComponents = GetComponentsInChildren<Collider>(true);
         var canvasComponents = GetComponentsInChildren<Canvas>(true);

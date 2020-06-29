@@ -10,27 +10,7 @@ public class LoadAssetBundle : MonoBehaviour
     string toastString;
     private short[] code = { 0, 0, 0 };//code is downloaded
     private int version;
-    AndroidJavaObject currentActivity;
-    // specify these in Unity Inspector
-
-    public void show(string toastString)
-    {
-        //
-        AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-        //
-        currentActivity.Call("runOnUiThread", new AndroidJavaRunnable(showToast));
-    }
-    private void showToast()
-    {
-        AndroidJavaObject context = currentActivity.Call<AndroidJavaObject>("getApplicationContext");
-        AndroidJavaClass Toast = new AndroidJavaClass("android.widget.Toast");
-        AndroidJavaObject javaString = new AndroidJavaObject("java.lang.String", toastString);
-
-        //
-        AndroidJavaObject toast = Toast.CallStatic<AndroidJavaObject>("makeText", context, javaString, Toast.GetStatic<int>("LENGTH_SHORT"));
-        toast.Call("show");
-    }
+   
     public void OnClickDownload()
     {
         StartCoroutine(DownloadAndCache());
@@ -48,28 +28,19 @@ public class LoadAssetBundle : MonoBehaviour
         using (WWW www = WWW.LoadFromCacheOrDownload(BundleURL, version))
         {
             yield return www;
-            if (www.error != null)
-            {
-                show("WWW download had an error: " + www.error);
-                throw new Exception("WWW download had an error:" + www.error);
-            }
+            if (www.error != null) throw new Exception("WWW download had an error:" + www.error);    
             AssetBundle bundle = www.assetBundle;
-            if (AssetName == "")
-            {
-                show("empty asset bundle name:");
-                throw new Exception("empty asset bundle name:");
-            }
+            if (AssetName == "")   throw new Exception("empty asset bundle name:");
+            
             else
             {   //download all prefabs 
-                show("no problems with download:");
                 if (code[0] == 0 && AssetName == "pawnbroker")
                 {// && GameObject.Find("pawnbroker1_target")== null
-                 //var prefab = bundle.LoadAsset<GameObject>("pawnbroker1_target");
-                 //Instantiate(prefab);
-                    var prefab = bundle.LoadAsset<GameObject>("pawnbroker2_target");
+                    var prefab = bundle.LoadAsset<GameObject>("pawnbroker1_target");
+                    Instantiate(prefab);
+                    prefab = bundle.LoadAsset<GameObject>("pawnbroker2_target");
                     Instantiate(prefab);
                     Debug.Log("pawnbroker распакована");
-                    show("pawnbroker распакована");
                     code[0] = 1;
                 }
                 else if (code[1] == 0 && AssetName == "rodion")
@@ -79,7 +50,6 @@ public class LoadAssetBundle : MonoBehaviour
                     //prefab = bundle.LoadAsset<GameObject>("rodion2_target");
                     //Instantiate(prefab);
                     Debug.Log("rodion распакована");
-                    show("rodion распакована");
                     code[1] = 1;
                 }
                 else if (code[2] == 0 && AssetName == "marmeladov")
@@ -88,11 +58,10 @@ public class LoadAssetBundle : MonoBehaviour
                     var parent_obj = GameObject.Find("marmeladov_target");
                     Instantiate(prefab);
                     Debug.Log("marmeladov распакована");
-                    show("marmeladov распакована");
                     code[2] = 1;
                     //foreach (obj2.GetComponent)
                 }
-                else show("ошмбка в имени asset bundle или все asset bundle загружены:" + www.error);
+                else throw new Exception("ошмбка в имени asset bundle или все asset bundle загружены:" + www.error);
 
 
 
